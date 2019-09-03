@@ -1,1 +1,2 @@
-# private_visiual_odometry
+一个关于红外与可见光图像融合的视觉里程计方案。
+将使用python完成
