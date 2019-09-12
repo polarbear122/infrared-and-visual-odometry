@@ -107,8 +107,8 @@ def imread(path, is_grayscale=True):
   """
   if is_grayscale:
     #flatten=True 以灰度图的形式读取
-    img = cv2.imread(path)
-    cv2.imshow('img',img)
+    img = cv2.imread(path，0)
+    #cv2.imshow('img',img)
     return img
   else:
     img = cv2.imread(path)
@@ -184,7 +184,7 @@ def input_setup(sess,config,data_dir,index=0):
     #input_, label_ = preprocess(data[2], config.scale)
     #input_=np.lib.pad((imread(data[index])-127.5)/127.5,((padding,padding),(padding,padding)),'edge')
     #label_=input_
-    input_=(imread(data[index])-127.5)/127.5
+    input_=(imread(data[index])-127.5)/127.5#对像素点进行标准化
     if len(input_.shape) == 3:
       h_real, w_real, _ = input_.shape
     else:
