@@ -6,7 +6,6 @@ STAGE_DEFAULT_FRAME = 2
 kMinNumFeature = 1500
 
 lk_params = dict(winSize  = (21, 21),
-				#maxLevel = 3,
              	criteria = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 30, 0.01))
 
 def featureTracking(image_ref, image_cur, px_ref):
@@ -32,7 +31,7 @@ class PinholeCamera:
 		self.d = [k1, k2, p1, p2, k3]
 
 
-class VisualOdometry:
+class FusionBasedOdometry:
 	def __init__(self, cam, annotations):
 		self.frame_stage = 0
 		self.cam = cam
@@ -75,7 +74,7 @@ class VisualOdometry:
 
 		scale = np.sqrt((x - x_prev)**2 + (z - z_prev)**2)
 		# if scale ==0:
-		# 	scale = 0.15  # 0.4 0.25
+		# 	scale = 0.15
 		# 	print('frame:{}'.format(frame_id, ))
 		return scale
 		
@@ -109,20 +108,8 @@ class VisualOdometry:
 		# print('t_plot:{},t:{}'.format(self.t_plot,t.reshape(1,3)))
 		self.t_plot = np.concatenate((self.t_plot,t.reshape(1,3)),0)
 		self.R_plot = np.concatenate((self.R_plot,R_change.reshape(1,3)),0)
-		# print('frame_id:{}\nR_change:{}\nt:{}\n'.format(frame_id,R_change,t))
-		# if frame_id>480 :
-		# 	self.cur_t = self.cur_t + absolute_scale * cur_R_t
-		# 	self.cur_R = R.dot(self.cur_R)
-		# if frame_id<=480:
-		
-		# if R_change[[0]]< 0.5 and R_change[[0]]>-0.5and  abs(R_change[[1]]<0.5)and R_change[[2]]<0.5and t[[0]]>0and t[[2]]>0:
-		if 1:
-			self.cur_t = self.cur_t + absolute_scale*cur_R_t
-			kkkk = 1
-			self.cur_R = R.dot(self.cur_R)
-		# if kkkk ==0 :
-		# 	print('The {} error\n'.format(frame_id))
-		# 	self.cur_t = np.concatenate([self.cur_t[[0]],self.cur_t[[1]],self.cur_t[[2]]+error_x])
+		self.cur_t = self.cur_t + absolute_scale*cur_R_t
+		kkkk = 1
 		if(self.px_ref.shape[0] < kMinNumFeature):
 			self.px_cur = self.detector.detect(self.new_frame)
 			self.px_cur = np.array([x.pt for x in self.px_cur], dtype=np.float32)
