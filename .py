@@ -4,16 +4,12 @@ import math
 from FusionBasedOdometry import PinholeCamera, FusionBasedOdometry
 import random
 import pandas as pd
-# cam = PinholeCamera(1200,900,7.18856e+02 ,7.18856e+02 ,6.071928e+02 ,1.852157e+02)
+
+
 cam = PinholeCamera(1200, 900, 3258.52325987820, 3221.05397172884, 626.110732333212, 439.400007275847)
-# cam = PinholeCamera(1200,900,766.765413391747,763.363755865027,162.478636966162, 134.075559387391)
-# annotations_path = 'D:\AM09/AM09posexy_zero.txt'
 annotations_path = 'D:\AM02/AM02posexy_zero.txt'
-# annotations_path = 'D:\kaist_place\PM10/PM10_East_posexy.txt'
 vo = VisualOdometry(cam, annotations_path)
 
-# vo = VisualOdometry(cam, 'D:\AM02/AM02posexy_zero.txt')
-# vo = VisualOdometry(cam, 'D:\dataset_all\KITTI_dataset_22G\dataset\sequences\poses/00.txt')
 degree_xita = 120
 degree_xita_calculate = 5
 xita = 3.1415/180*(degree_xita)  # 55degree  120
@@ -25,7 +21,7 @@ matches = 0
 inliers = 0
 window_control = 1
 stride = 100
-# begin = 6300 stop = 8000 AM09seq
+
 begin = 0
 stop = 8000
 with open(annotations_path) as f:
@@ -34,25 +30,15 @@ with open(annotations_path) as f:
     x_prev = (float(begin_location[0]))
     z_prev = (float(begin_location[1]))
 # print('begin_location:{}'.format(x_prev))
-# begin = 6250
-# stop = 6450
+
 for img_id in range(8859):
     id = img_id*stride+begin
-    # if id==1575or id==1656or id==1891or id==1893or(id>1689and id <1720)or id==1957or id==1995or id==2043\
-    # 		or id==2067or id==2069or id==2078or id==2095:
-    # 	continue
-    # print(id)
+
     if id > stop:
         break
-    # img = cv2.imread('D:\DWT_test\AM09_fused_DWT/'+str(id)+'.png',0)
-    # img = cv2.imread('D:\AM09\AM09_vi/I'+str(id).zfill(5)+'.png',0)
-    # img = cv2.imread('./AM02Dense_epoch10/'+str(id)+'.png', 0)
-    # img = cv2.imread('D:\dataset_all\KITTI_dataset_22G\dataset\sequences/00\image_0/'+str(id).zfill(6)+'.png',0)
+
     img = cv2.imread('D:\AM09\AM09_vi/I'+str(id).zfill(5)+'.png',0)
-    # img = cv2.imread('D:/kaist_place/PM10/East/East_image/vi/I'+str(id).zfill(5)+'.png',0)
-    # img = cv2.imread('D:\AM09\AM09_epoch29/F9_' + str(id).zfill(2) + '.png', 0)
-    # clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
-    # img = clahe.apply(img)
+
     vo.update(img, id,DEFAULT, stride)
     DEFAULT += 1
     cur_t = vo.cur_t
@@ -65,17 +51,12 @@ for img_id in range(8859):
     # vo.trueX = -vo.trueX
     a = -x_prev
     b = -z_prev
-    # a = 0
-    # b = 0
-    # print(math.cos(xita))
+
     trueX = (math.cos(xita)*(vo.trueX+a)-math.sin(xita)*(vo.trueZ+b))
     trueZ = math.sin(xita)*(vo.trueX+a)+math.cos(xita)*(vo.trueZ+b)
-    # trueX = vo.trueX
-    # trueZ = vo.trueZ
+
     draw_x = -(math.cos(xita_calculate) * (x) - math.sin(xita_calculate) * (z))
     draw_y = math.sin(xita_calculate) * (x) + math.cos(xita_calculate) * (z)
-    # draw_x= x
-    # draw_y= z
 
     true_x, true_y = int(trueX), int(trueZ)
     draw_x, draw_y = int(draw_x), int(draw_y)
