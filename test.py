@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
 import math
-from AM09_odometry import PinholeCamera, VisualOdometry
+from FusionBasedOdometry import PinholeCamera, FusionBasedOdometry
 import random
 import pandas as pd
 # cam = PinholeCamera(1200,900,7.18856e+02 ,7.18856e+02 ,6.071928e+02 ,1.852157e+02)
